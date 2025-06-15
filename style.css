@@ -1,0 +1,110 @@
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+header{
+    background-color: #004080;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}
+
+nav a{
+    color: #ffffff;
+    margin: 0 15px;
+    text-decoration: none;
+}
+
+#hero{
+    background-color: #007acc;
+    color: #ffffff;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.cta-btn{
+    background-color: yellow;
+    padding: 10px 20px;
+    border: none;
+    color: #004080;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+section{
+    padding: 40px 20px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin: auto;
+
+}
+
+form input, form textarea, form select, form button{
+    padding: 10px;
+    font-size: 16px;
+}
+
+#search{
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#search-input{
+    padding: 10px;
+    width: 80%;
+    max-width: 400px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.item-card{
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.item-img{
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+
+#preview-image{
+    display: none;
+    max-height: 200px;
+    motion-path: 10px;
+    border-radius: 10px;
+}
+
+
+.item-actions{
+    margin-top: 12px;
+}
+
+.edit-btn{
+    background-color: #fff;
+}
+.edit-btn, .delete-btn{
+margin-right: 8px;
+padding: 4px 10px;
+border-top: none;
+border-radius: 6px;
+cursor: pointer;
+}

@@ -1,87 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindIt KE - Lost & Found</title>
-    <link rel="stylesheet" href="styles/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Findit KE - Lost & Found Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="images/favicon_io (11)/android-chrome-192x192.png" type="imge">
 </head>
+
 <body>
-    <header>
-        <h1>FindIt KE</h1>
-        <nav>
-            <a href="#lost-items">Lost Items</a>
-            <a href="#found-items">Found Items</a>
-            <a href="#contact">Contact Us</a>
-        </nav>
-    </header>
+  <header>
+    <h1>Findit KE</h1>
+    <nav>
+      <a href="#lost">Lost Items</a>
+      <a href="#found">Found Items</a>
+      <a href="#report">Report</a>
+    </nav>
+  </header>
 
-    <section id="hero">
-        <h2>Lost something? Found something?</h2>
-        <p>Report it to FindIt KE - Helping Kenyans reunite with lost items!</p>
-        <a href="#report-form" class="cta-button">Report Now</a>
-    </section>
+  <section id="hero">
+    <h2>Lost something? Found something?</h2>
+    <p>We connect people with their lost items across Kenya.</p>
+    <a href="#report" class="cta-btn">Report Now</a>
+  </section>
 
-    <!-- Add more sections for Lost and Found items -->
-   
-    <footer>
-        <p>FindIt KE - All rights reserved</p>
-    </footer>
+  <section id="search">
+    <h3>Search Items</h3>
+    <input type="text" id="search-input" placeholder="Search by item name...">
 
-    <script src="scripts/app.js"></script>
+  </section>
+
+  <section id="lost">
+    <h3>Recently Reported Lost Items</h3>
+    <div class="item-list" id="lost-items"></div>
+  </section>
+
+  <section id="found">
+    <h3>Recently Found Items</h3>
+    <div class="item-list" id="found-items"></div>
+  </section>
+
+
+  <section>
+    <h3>Report Lost or Found Items</h3>
+    <form action="" id="report-form">
+      <input type="text" id="item-name" placeholder="item name" required>
+      <textarea name="" id="item-desc" placeholder="Description" required></textarea>
+
+      <select name="" id="item-type">
+        <option value="lost">Lost</option>
+        <option value="found">Found</option>
+      </select>
+      <input type="file" id="item-image" accept="image/*">
+      <img id="preview-image">
+      <button type="submit">Submit</button>
+    </form>
+    <div class="item-list" id="lost-items"></div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Findit KE. All rights reserved.</p>
+  </footer>
+
+  <script>
+    //for form handling this is what i have implemented for my product
+
+    document.getElementById('report-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('item-name').value;
+      const desc = document.getElementById('item-desc').value;
+      const type = document.getElementById('item-type').value;
+      const imageInput = document.getElementById('item-image');
+      const previewImage = document.getElementById('preview-image');
+      const errorMsg = document.getElementById('image-error');
+      errorMsg.textContent = "";
+
+
+      const imageURL = URL.createObjectURL(file);
+      previewImage.src = imageURL;
+      previewImage.style.display = 'block';
+
+      imageInput.addEventListener('change', function () {
+        const file = this.files[0]
+
+        if (file) {
+          const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+          const maxSize = 2 * 1024 * 1024;
+        }
+
+        if (!validTypes.includes(file.type) || file.size > maxSize) {
+          previewImage.src = imageURL;
+          previewImage.style.display = 'none';
+          return;
+
+        
+        }
+        if (file.size > maxSize){
+          errorMsg.textContent = "Image size must be less than 2MB"
+          return;
+        }
+imageURL = await compressImage(file)
+
+      })
+
+
+
+      function compressImage(file, quality = 0.7, maxWidth = 800) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            const img = new image();
+            img.onload = function () {
+
+              const canvas = document.createElement('canvas');
+              const scale = Math.min(maxWidth / img.width, 1);
+              canvas.width = img.width * scale;
+              canvas.height = img.height * scale;
+
+
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+
+              canvas.toBlob((blob) => {
+                const compressedUrl = URL.createObjectURL(blob);
+                resolve(compressedUrl)
+              },
+                'image/jpeg',
+                quality
+              );
+            };
+            img.src = event.target.result;
+          };
+          reader.readAsDataURL(file)
+        })
+      }
+      if (imageInput.files && imageInput.files[0]) {
+        imageURL = URL.createObjectURL(imageInput.files[0])
+      }
+
+
+      const itemHTML = `
+  <div class="item-card">
+    ${imageURL ? `<img src="${imageURL}" alt="${name}" class = 'item-img` : ""}
+  <h4>${name}</h4>
+  <p>${desc}</p>
+
+<div class="item-actions">
+
+  <button class="edit-btn">Edit</button>
+  <button class="delete-btn">Delete</button>
+
+</div>
+
+</div>
+
+  `;
+
+      document.body.addEventListener('click', function (e) {
+        const card = e.target.closest('.item-card');
+
+        if (e.target.classList.contains('delete-btn')) {
+          card.remove();
+        }
+
+        if (e.target.classList.contains('edit-btn')) {
+          const name = card.querySelector(".item-name").textContent;
+          const desc = card.querySelector('.item-desc').textContent;
+
+
+          document.getElementById('item-name').value = name;
+          document.getElementById('item-desc').value = desc;
+
+
+          card.remove();
+        }
+
+
+      });
+
+
+      if (type === 'lost') {
+        document.getElementById('lost-items').innerHTML += itemHTML;
+
+      }
+
+      else {
+        document.getElementById('found-items').innerHTML += itemHTML
+      }
+
+      document.getElementById('report-form').reset();
+      previewImage.style.display = 'none';
+    });
+
+
+    const searchInput = document.getElementById('search-input');
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const allItems = document.querySelectorAll('.item-card');
+      allItems.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+      });
+    });
+
+function getStoredReports(){
+  return JSON.parse(localStorage.getItem("lostAndFoundReports") || "[]");
+
+}
+
+
+function saveReport(report){
+  const reports = getStoredReports();
+  reports.push(report)
+  localStorage.setItem("lostAndFoundReports", JSON.stringify(reports));
+}
+
+function deleteReport(index){
+  const reports = getStoredReports();
+  reports.splice(index, 1);
+  localStorage.setItem("lostAndFoundReports", JSON.stringify(reports))
+}
+
+
+document.getElementById('report-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+
+  
+})
+
+  </script>
 </body>
+
 </html>
-
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
-}
-
-header {
-    background-color: #005b96;
-    color: white;
-    padding: 15px;
-    text-align: center;
-}
-
-header nav a {
-    margin: 0 15px;
-    color: white;
-    text-decoration: none;
-}
-
-#hero {
-    background-color: #007bff;
-    color: white;
-    text-align: center;
-    padding: 50px 20px;
-}
-
-.cta-button {
-    background-color: #ffcd00;
-    padding: 15px 30px;
-    color: #005b96;
-    text-decoration: none;
-    border-radius: 5px;
-}
-
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-</style>
-
-
-<script>
-    document.querySelector('.cta-button').addEventListener('click', function() {
-    alert('Redirecting to the report page...');
-    // You can add form functionality to handle reports
-});
-</script>
